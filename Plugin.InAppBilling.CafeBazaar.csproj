@@ -1,0 +1,45 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
+  <PropertyGroup>
+    <TargetFrameworks>MonoAndroid90</TargetFrameworks>
+    <AssemblyName>Plugin.InAppBilling.CafeBazaar</AssemblyName>
+    <RootNamespace>Plugin.InAppBilling</RootNamespace>
+    <PackageId>Plugin.InAppBilling.CafeBazaar</PackageId>
+    <Product>$(AssemblyName) ($(TargetFramework))</Product>
+    <Version>1.0.0.0</Version>
+    <PackOnBuild>true</PackOnBuild>
+    <NeutralLanguage>en</NeutralLanguage>
+    <DefineConstants>$(DefineConstants)</DefineConstants>
+    <UseFullSemVerForNuGet>false</UseFullSemVerForNuGet>
+    <LangVersion>latest</LangVersion>
+    <DebugType>portable</DebugType>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/Geeksltd/Plugin.InAppBilling.CafeBazaar/master/Zebble-LicenseAgreement.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://nuget.org/packages/Plugin.InAppBilling.CafeBazaar/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Geeksltd/Plugin.InAppBilling.CafeBazaar/</RepositoryUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/Geeksltd/Plugin.InAppBilling.CafeBazaar/master/icon.png</PackageIconUrl>
+    <PackageTags>xamarin, android, zebble</PackageTags>
+    <Title>Plugin.InAppBilling.CafeBazaar</Title>
+    <Description>Zebble IAP plugin for Cafe Bazaar.</Description>
+    <PackageReleaseNotes>Minor fixes</PackageReleaseNotes>
+    <Owners>Geeks Ltd</Owners>
+    <Authors>Geeks Ltd</Authors>
+    <Copyright>Geeks Ltd 2021, All rights reserved.</Copyright>
+    <DisableExtraReferences>true</DisableExtraReferences>
+  </PropertyGroup>
+  <PropertyGroup Condition=" $(Configuration.StartsWith('Debug')) ">
+    <DebugSymbols>true</DebugSymbols>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" $(Configuration.StartsWith('Release')) ">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove=".gitignore" />
+    <None Remove="icon.png" />
+    <None Remove="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1-beta1" />
+    <PackageReference Include="Plugin.CurrentActivity" Version="2.1.0.4" />
+  </ItemGroup>
+</Project>
