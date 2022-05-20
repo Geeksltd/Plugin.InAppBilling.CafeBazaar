@@ -4,5 +4,6 @@
     {
         InAppPurchase,
         Subscription,
+        Voucher
     }
 }

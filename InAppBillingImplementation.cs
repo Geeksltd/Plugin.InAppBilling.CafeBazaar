@@ -1,6 +1,5 @@
 ﻿using Android.App;
 using Android.Content;
-using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using Android.Util;
@@ -13,6 +12,7 @@ using Plugin.CurrentActivity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Plugin.InAppBilling
@@ -197,6 +197,7 @@ namespace Plugin.InAppBilling
                     purchase = await PurchaseAsync(productId, "inapp", payload, verifyPurchase);
                     break;
                 case ItemType.Subscription:
+                case ItemType.Voucher:
                     purchase = await PurchaseAsync(productId, "subs", payload, verifyPurchase);
                     break;
             }
@@ -470,8 +471,23 @@ namespace Plugin.InAppBilling
             [JsonProperty(PropertyName = "title")]
             public string Title { get; set; }
 
+            string _Price;
             [JsonProperty(PropertyName = "price")]
-            public string Price { get; set; }
+            public string Price
+            {
+                get
+                {
+                    return _Price;
+                }
+                set
+                {
+                    _Price = value;
+                    if (long.TryParse(ExtractNumbers(PersianToEnglishNumberCharacter(_Price)), out long price))
+                    {
+                        MicrosPrice = price / 10; //convert rial to toman
+                    }
+                }
+            }
 
             [JsonProperty(PropertyName = "type")]
             public string Type { get; set; }
@@ -489,6 +505,30 @@ namespace Plugin.InAppBilling
             public long MicrosPrice { get; set; }
 
             public override string ToString() => string.Format("[Product: Title={0}, Price={1}, Type={2}, Description={3}, ProductId={4}]", Title, Price, Type, Description, ProductId);
+
+            static string PersianToEnglishNumberCharacter(string persianNumbers)
+            {
+                string EnglishNumbers = "";
+
+                for (int i = 0; i < persianNumbers.Length; i++)
+                {
+                    if (char.IsDigit(persianNumbers[i]))
+                    {
+                        EnglishNumbers += char.GetNumericValue(persianNumbers, i);
+                    }
+                    else
+                    {
+                        EnglishNumbers += persianNumbers[i].ToString();
+                    }
+                }
+                return EnglishNumbers;
+            }
+            static string ExtractNumbers(string text)
+            {
+                if (text == null)
+                    return text;
+                return string.Join(string.Empty, Regex.Matches(text, @"\d+").OfType<Match>().Select(m => m.Value));
+            }
         }
 
         [Preserve(AllMembers = true)]
