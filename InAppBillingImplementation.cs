@@ -484,7 +484,7 @@ namespace Plugin.InAppBilling
                     _Price = value;
                     if (long.TryParse(ExtractNumbers(PersianToEnglishNumberCharacter(_Price)), out long price))
                     {
-                        MicrosPrice = price / 10; //convert rial to toman
+                        MicrosPrice = price * 100000; //convert rial to toman
                     }
                 }
             }
@@ -499,7 +499,7 @@ namespace Plugin.InAppBilling
             public string ProductId { get; set; }
 
             [JsonProperty(PropertyName = "price_currency_code")]
-            public string CurrencyCode { get; set; }
+            public string CurrencyCode { get; set; } = "IRR";
 
             [JsonProperty(PropertyName = "price_amount_micros")]
             public long MicrosPrice { get; set; }
