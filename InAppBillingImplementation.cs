@@ -484,7 +484,7 @@ namespace Plugin.InAppBilling
                     _Price = value;
                     if (long.TryParse(ExtractNumbers(PersianToEnglishNumberCharacter(_Price)), out long price))
                     {
-                        MicrosPrice = price * 100000; //convert rial to toman
+                        MicrosPrice = price * 100000;
                     }
                 }
             }
