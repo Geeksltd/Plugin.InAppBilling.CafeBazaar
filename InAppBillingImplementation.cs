@@ -356,32 +356,40 @@ namespace Plugin.InAppBilling
 
         public static void HandleActivityResult(int requestCode, Result resultCode, Intent data)
         {
-            if (1001 != requestCode || data == null)
-                return;
-            int intExtra = data.GetIntExtra("RESPONSE_CODE", 0);
-            switch (intExtra)
+            try
             {
-                case 0:
-                    string stringExtra1 = data.GetStringExtra("INAPP_PURCHASE_DATA");
-                    string stringExtra2 = data.GetStringExtra("INAPP_DATA_SIGNATURE");
-                    TaskCompletionSource<PurchaseResponse> tcsPurchase = InAppBillingImplementation.tcsPurchase;
-                    if (tcsPurchase == null)
+                if (1001 != requestCode || data == null)
+                    return;
+                int intExtra = data.GetIntExtra("RESPONSE_CODE", 0);
+                switch (intExtra)
+                {
+                    case 0:
+                        string stringExtra1 = data.GetStringExtra("INAPP_PURCHASE_DATA");
+                        string stringExtra2 = data.GetStringExtra("INAPP_DATA_SIGNATURE");
+                        TaskCompletionSource<PurchaseResponse> tcsPurchase = InAppBillingImplementation.tcsPurchase;
+                        if (tcsPurchase == null)
+                            break;
+                        tcsPurchase.TrySetResult(new PurchaseResponse()
+                        {
+                            PurchaseData = stringExtra1,
+                            DataSignature = stringExtra2
+                        });
                         break;
-                    tcsPurchase.TrySetResult(new PurchaseResponse()
-                    {
-                        PurchaseData = stringExtra1,
-                        DataSignature = stringExtra2
-                    });
-                    break;
-                case 1:
-                    InAppBillingImplementation.tcsPurchase.SetException(new InAppBillingPurchaseException(PurchaseError.UserCancelled));
-                    break;
-                case 2:
-                    InAppBillingImplementation.tcsPurchase.SetException(new InAppBillingPurchaseException(PurchaseError.ServiceUnavailable));
-                    break;
-                default:
-                    InAppBillingImplementation.tcsPurchase.SetException(new InAppBillingPurchaseException(PurchaseError.GeneralError, intExtra.ToString()));
-                    break;
+                    case 1:
+                        InAppBillingImplementation.tcsPurchase.SetException(new InAppBillingPurchaseException(PurchaseError.UserCancelled));
+                        break;
+                    case 2:
+                        InAppBillingImplementation.tcsPurchase.SetException(new InAppBillingPurchaseException(PurchaseError.ServiceUnavailable));
+                        break;
+                    default:
+                        InAppBillingImplementation.tcsPurchase.SetException(new InAppBillingPurchaseException(PurchaseError.GeneralError, intExtra.ToString()));
+                        break;
+                }
+            }
+            finally
+            {
+                if (!InAppBillingImplementation.tcsPurchase.Task.IsCompleted)
+                    InAppBillingImplementation.tcsPurchase.SetResult(null);
             }
         }
 
