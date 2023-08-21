@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using Android.Util;
@@ -435,7 +436,7 @@ namespace Plugin.InAppBilling
                 tcsConnect = new TaskCompletionSource<bool>();
                 Intent intent = new Intent("ir.cafebazaar.pardakht.InAppBillingService.BIND");
                 intent.SetPackage("com.farsitel.bazaar");
-                if (!Context.PackageManager.QueryIntentServices(intent, 0).Any())
+                if (!Context.PackageManager.QueryIntentServices(intent, PackageManager.ResolveInfoFlags.Of(0)).Any())
                     return Task.FromResult(false);
                 Context.BindService(intent, this, Bind.AutoCreate);
                 return tcsConnect.Task;
