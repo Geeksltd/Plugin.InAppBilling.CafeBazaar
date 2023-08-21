@@ -433,11 +433,16 @@ namespace Plugin.InAppBilling
             {
                 if (IsConnected)
                     return Task.FromResult(true);
+
                 tcsConnect = new TaskCompletionSource<bool>();
+
                 Intent intent = new Intent("ir.cafebazaar.pardakht.InAppBillingService.BIND");
                 intent.SetPackage("com.farsitel.bazaar");
+                intent.SetClassName("com.farsitel.bazaar", "com.farsitel.bazaar.inappbilling.service.InAppBillingService");
+
                 if (!Context.PackageManager.QueryIntentServices(intent, PackageManager.ResolveInfoFlags.Of(0)).Any())
                     return Task.FromResult(false);
+
                 Context.BindService(intent, this, Bind.AutoCreate);
                 return tcsConnect.Task;
             }
