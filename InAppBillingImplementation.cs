@@ -438,10 +438,20 @@ namespace Plugin.InAppBilling
 
                 Intent intent = new Intent("ir.cafebazaar.pardakht.InAppBillingService.BIND");
                 intent.SetPackage("com.farsitel.bazaar");
-                intent.SetClassName("com.farsitel.bazaar", "com.farsitel.bazaar.inappbilling.service.InAppBillingService");
+                intent.SetClassName("com.farsitel.bazaar",
+                    "com.farsitel.bazaar.inappbilling.service.InAppBillingService");
 
-                if (!Context.PackageManager.QueryIntentServices(intent, PackageManager.ResolveInfoFlags.Of(0)).Any())
-                    return Task.FromResult(false);
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
+                {
+                    if (!Context.PackageManager
+                            .QueryIntentServices(intent, PackageManager.ResolveInfoFlags.Of(0)).Any())
+                        return Task.FromResult(false);
+                }
+                else
+                {
+                    if (!Context.PackageManager.QueryIntentServices(intent, 0).Any())
+                        return Task.FromResult(false);
+                }
 
                 Context.BindService(intent, this, Bind.AutoCreate);
                 return tcsConnect.Task;
